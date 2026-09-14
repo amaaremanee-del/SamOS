@@ -1,0 +1,5983 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>SamOS</title>
+
+<style>
+
+/* =========================
+   GLOBAL
+========================= */
+
+*{
+    box-sizing:border-box;
+}
+
+:root{
+    --samos-brightness:1;
+}
+
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    overflow:hidden;
+    background:#eef1f6;
+    color:#171a21;
+}
+
+
+/* =========================
+   BRIGHTNESS OVERLAY
+========================= */
+
+/*
+   This overlay covers the ENTIRE SamOS interface.
+   It does NOT affect the login screen because
+   the login screen has a higher z-index.
+*/
+
+#samosBrightnessOverlay{
+    position:fixed;
+    inset:0;
+    background:#000;
+    opacity:calc(1 - var(--samos-brightness));
+    pointer-events:none;
+    z-index:9998;
+}
+
+
+/* =========================
+   WALLPAPER
+========================= */
+
+body.wallpaper-nebula{
+    background:
+        radial-gradient(
+            circle at 72% 35%,
+            rgba(116,65,255,.75),
+            transparent 18%
+        ),
+        radial-gradient(
+            circle at 35% 65%,
+            rgba(0,145,255,.55),
+            transparent 22%
+        ),
+        radial-gradient(
+            circle at 58% 48%,
+            rgba(235,30,150,.45),
+            transparent 25%
+        ),
+        linear-gradient(
+            135deg,
+            #02030b,
+            #090025 45%,
+            #020713
+        );
+
+    color:white;
+}
+
+body.wallpaper-nebula::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    opacity:.8;
+
+    background-image:
+        radial-gradient(
+            circle,
+            white 1px,
+            transparent 1px
+        ),
+        radial-gradient(
+            circle,
+            rgba(255,255,255,.7) 1px,
+            transparent 1px
+        );
+
+    background-size:
+        83px 91px,
+        137px 119px;
+
+    background-position:
+        10px 20px,
+        50px 70px;
+}
+
+
+/* =========================
+   LIGHT MODE
+========================= */
+
+body.light{
+    background:#eef1f6;
+    color:#171a21;
+}
+
+body.light.wallpaper-nebula{
+    color:white;
+}
+
+body.light .taskbar{
+    background:#f7f8fb;
+    border-top:1px solid #d4d9e2;
+}
+
+body.light .customize-taskbar,
+body.light .diamond-button,
+body.light .task-app,
+body.light .system-button{
+    color:#171a21;
+}
+
+body.light .customize-taskbar,
+body.light .diamond-button,
+body.light .task-app:hover,
+body.light .system-button:hover{
+    background:#e1e5ec;
+}
+
+body.light .app-search{
+    background:white;
+    color:#171a21;
+    border-color:#c8ced8;
+}
+
+body.light .app-search::placeholder{
+    color:#727b89;
+}
+
+
+/* =========================
+   LOGIN
+========================= */
+
+#loginScreen{
+    position:fixed;
+    inset:0;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    background:#eef1f6;
+
+    z-index:10000;
+}
+
+body.wallpaper-nebula #loginScreen{
+    background:
+        radial-gradient(
+            circle at 72% 35%,
+            rgba(116,65,255,.75),
+            transparent 18%
+        ),
+        radial-gradient(
+            circle at 35% 65%,
+            rgba(0,145,255,.55),
+            transparent 22%
+        ),
+        radial-gradient(
+            circle at 58% 48%,
+            rgba(235,30,150,.45),
+            transparent 25%
+        ),
+        linear-gradient(
+            135deg,
+            #02030b,
+            #090025 45%,
+            #020713
+        );
+}
+
+.login-box{
+    width:380px;
+    max-height:90vh;
+
+    overflow:auto;
+
+    padding:32px;
+
+    background:#f7f8fb;
+    color:#171a21;
+
+    border:1px solid #cbd1db;
+    border-radius:15px;
+
+    text-align:center;
+
+    box-shadow:
+        0 20px 60px rgba(0,0,0,.35);
+}
+
+body.wallpaper-nebula .login-box{
+    background:rgba(15,18,38,.94);
+    color:white;
+    border-color:#444968;
+}
+
+.login-logo{
+    font-size:60px;
+}
+
+.login-box h1{
+    color:#171a21;
+    margin:8px 0;
+}
+
+body.wallpaper-nebula .login-box h1{
+    color:white;
+}
+
+.login-box p{
+    color:#626b79;
+}
+
+body.wallpaper-nebula .login-box p{
+    color:#c9ccef;
+}
+
+.login-user{
+    font-size:55px;
+}
+
+.login-box input{
+    width:100%;
+
+    padding:12px;
+    margin-top:8px;
+
+    border:1px solid #c8ced8;
+    border-radius:8px;
+
+    outline:none;
+
+    background:white;
+    color:#171a21;
+}
+
+.account-button,
+.login-box>button{
+    width:100%;
+
+    padding:12px;
+    margin-top:8px;
+
+    border:none;
+    border-radius:8px;
+
+    background:#405a85;
+    color:white;
+
+    font-size:16px;
+
+    cursor:pointer;
+}
+
+.account-button:hover,
+.login-box>button:hover{
+    background:#506fa5;
+}
+
+.add-account{
+    background:#d8dde6!important;
+    color:#171a21!important;
+}
+
+#accountList{
+    display:flex;
+    flex-direction:column;
+}
+
+
+/* =========================
+   DESKTOP
+========================= */
+
+.desktop{
+    height:calc(100vh - 64px);
+
+    padding:20px;
+
+    position:relative;
+}
+
+.welcome{
+    font-size:32px;
+    font-weight:bold;
+}
+
+.subtitle{
+    margin-top:5px;
+    color:#626b79;
+}
+
+.wallpaper-nebula .subtitle{
+    color:#d8d8ff;
+}
+
+.desktop-icons{
+    display:flex;
+
+    flex-direction:column;
+
+    gap:10px;
+
+    margin-top:30px;
+
+    width:100px;
+}
+
+.desktop-icon{
+    width:90px;
+
+    padding:8px;
+
+    text-align:center;
+
+    border-radius:8px;
+
+    user-select:none;
+
+    cursor:pointer;
+}
+
+.desktop-icon:hover{
+    background:rgba(128,128,128,.15);
+}
+
+.icon-picture{
+    font-size:40px;
+}
+
+.icon-name{
+    font-size:13px;
+}
+
+
+/* =========================
+   TASKBAR
+========================= */
+
+.taskbar{
+    position:fixed;
+
+    bottom:0;
+    left:0;
+    right:0;
+
+    height:64px;
+
+    background:#f7f8fb;
+
+    display:flex;
+
+    align-items:center;
+
+    padding:0 12px;
+
+    z-index:5000;
+
+    border-top:1px solid #d4d9e2;
+}
+
+.wallpaper-nebula .taskbar{
+    background:rgba(10,12,25,.9);
+
+    border-top-color:#343653;
+
+    backdrop-filter:blur(12px);
+}
+
+.customize-taskbar{
+    background:#e1e5ec;
+
+    border:1px solid #c8ced8;
+
+    color:#171a21;
+
+    padding:9px 13px;
+
+    border-radius:8px;
+
+    font-size:13px;
+
+    cursor:pointer;
+}
+
+.wallpaper-nebula .customize-taskbar{
+    background:#20243a;
+
+    border-color:#444968;
+
+    color:white;
+}
+
+.taskbar-center{
+    position:absolute;
+
+    left:50%;
+
+    transform:translateX(-50%);
+
+    display:flex;
+
+    align-items:center;
+
+    gap:7px;
+
+    height:100%;
+}
+
+.diamond-button{
+    width:42px;
+    height:42px;
+
+    border:none;
+
+    border-radius:10px;
+
+    background:#e1e5ec;
+
+    color:#171a21;
+
+    font-size:25px;
+
+    cursor:pointer;
+}
+
+.wallpaper-nebula .diamond-button{
+    background:#20243a;
+    color:white;
+}
+
+.app-search{
+    width:190px;
+    height:38px;
+
+    border:1px solid #c8ced8;
+
+    border-radius:9px;
+
+    background:white;
+
+    color:#171a21;
+
+    padding:0 12px;
+
+    outline:none;
+}
+
+.wallpaper-nebula .app-search{
+    background:#111426;
+
+    border-color:#444968;
+
+    color:white;
+}
+
+.task-app{
+    width:42px;
+    height:42px;
+
+    border:none;
+
+    border-radius:9px;
+
+    background:transparent;
+
+    color:#171a21;
+
+    font-size:23px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    position:relative;
+
+    cursor:pointer;
+}
+
+.wallpaper-nebula .task-app{
+    color:white;
+}
+
+.task-app:hover{
+    background:#e1e5ec;
+}
+
+.wallpaper-nebula .task-app:hover{
+    background:#292e49;
+}
+
+.task-app.running::after{
+    content:"";
+
+    position:absolute;
+
+    bottom:3px;
+
+    width:6px;
+    height:3px;
+
+    border-radius:3px;
+
+    background:#405a85;
+}
+
+.wallpaper-nebula .task-app.running::after{
+    background:#aab8ff;
+}
+
+.taskbar-right{
+    margin-left:auto;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:6px;
+}
+
+.system-button{
+    height:42px;
+
+    border:none;
+
+    background:transparent;
+
+    color:#171a21;
+
+    border-radius:8px;
+
+    padding:0 8px;
+
+    cursor:pointer;
+}
+
+.wallpaper-nebula .system-button{
+    color:white;
+}
+
+.clock-container{
+    text-align:right;
+
+    line-height:1.2;
+
+    padding:0 6px;
+
+    min-width:75px;
+}
+
+.clock{
+    font-size:13px;
+}
+
+.date{
+    font-size:11px;
+
+    color:#626b79;
+}
+
+.wallpaper-nebula .date{
+    color:#b9bdd6;
+}
+
+
+/* =========================
+   CONTROL CENTRE
+========================= */
+
+.control-centre{
+    display:none;
+
+    position:fixed;
+
+    right:12px;
+    bottom:74px;
+
+    width:360px;
+
+    padding:16px;
+
+    background:#f7f8fb;
+
+    color:#171a21;
+
+    border:1px solid #cbd1db;
+
+    border-radius:16px;
+
+    box-shadow:
+        0 20px 60px rgba(0,0,0,.45);
+
+    z-index:7000;
+}
+
+.control-centre.show{
+    display:block;
+}
+
+.wallpaper-nebula .control-centre{
+    background:#071329;
+
+    color:white;
+
+    border-color:#263e68;
+}
+
+.control-header{
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    margin-bottom:15px;
+}
+
+.control-header h2{
+    margin:0;
+
+    font-size:20px;
+}
+
+.control-header span{
+    color:#68748a;
+
+    font-size:12px;
+}
+
+.wallpaper-nebula .control-header span{
+    color:#aebbd3;
+}
+
+.control-header button{
+    width:38px;
+    height:38px;
+
+    border:none;
+
+    border-radius:9px;
+
+    background:#e1e5ec;
+
+    cursor:pointer;
+
+    font-size:18px;
+}
+
+.wallpaper-nebula .control-header button{
+    background:#14294a;
+
+    color:white;
+}
+
+.quick-settings{
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:8px;
+}
+
+.quick-setting{
+    min-height:68px;
+
+    border:none;
+
+    border-radius:10px;
+
+    background:#e1e5ec;
+
+    color:#171a21;
+
+    cursor:pointer;
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:flex-start;
+
+    justify-content:center;
+
+    padding:12px;
+
+    gap:5px;
+
+    font-size:21px;
+}
+
+.quick-setting span{
+    font-size:12px;
+}
+
+.quick-setting:hover{
+    background:#d4d9e2;
+}
+
+.quick-setting.active{
+    background:#405a85;
+
+    color:white;
+}
+
+.wallpaper-nebula .quick-setting{
+    background:#102345;
+
+    color:white;
+}
+
+.wallpaper-nebula .quick-setting:hover{
+    background:#173461;
+}
+
+.wallpaper-nebula .quick-setting.active{
+    background:#315b96;
+}
+
+.control-section{
+    margin-top:15px;
+
+    padding:12px;
+
+    background:#e9ecf2;
+
+    border-radius:10px;
+}
+
+.wallpaper-nebula .control-section{
+    background:#0b1a35;
+}
+
+.control-label{
+    display:flex;
+
+    justify-content:space-between;
+
+    margin-bottom:8px;
+
+    font-size:13px;
+}
+
+.control-section input[type="range"]{
+    width:100%;
+}
+
+.battery-card{
+    margin-top:15px;
+
+    padding:14px;
+
+    border-radius:10px;
+
+    background:#e9ecf2;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+}
+
+.wallpaper-nebula .battery-card{
+    background:#0b1a35;
+}
+
+.battery-icon{
+    font-size:30px;
+}
+
+#batteryStatus{
+    margin-top:3px;
+
+    font-size:12px;
+
+    color:#68748a;
+}
+
+.wallpaper-nebula #batteryStatus{
+    color:#aebbd3;
+}
+
+.open-settings-button{
+    width:100%;
+
+    margin-top:12px;
+
+    padding:11px;
+
+    border:none;
+
+    border-radius:9px;
+
+    background:#405a85;
+
+    color:white;
+
+    cursor:pointer;
+
+    font-size:14px;
+}
+
+.control-centre-button{
+    height:42px;
+
+    padding:0 13px;
+
+    border:none;
+
+    border-radius:9px;
+
+    background:#e1e5ec;
+
+    color:#171a21;
+
+    cursor:pointer;
+
+    font-size:13px;
+}
+
+.wallpaper-nebula .control-centre-button{
+    background:#20243a;
+
+    color:white;
+}
+
+
+/* =========================
+   START MENU
+========================= */
+
+.start-menu{
+    display:none;
+
+    position:fixed;
+
+    bottom:74px;
+
+    left:50%;
+
+    transform:translateX(-50%);
+
+    width:340px;
+
+    background:#f7f8fb;
+
+    border:1px solid #cbd1db;
+
+    border-radius:14px;
+
+    padding:15px;
+
+    z-index:6000;
+
+    box-shadow:
+        0 15px 40px rgba(0,0,0,.5);
+}
+
+.wallpaper-nebula .start-menu{
+    background:#171a2b;
+
+    color:white;
+
+    border-color:#3d4260;
+}
+
+.start-menu h2{
+    margin:0 0 12px;
+}
+
+.start-menu-search{
+    width:100%;
+
+    height:38px;
+
+    border:1px solid #c8ced8;
+
+    border-radius:8px;
+
+    background:white;
+
+    padding:0 12px;
+
+    outline:none;
+}
+
+.wallpaper-nebula .start-menu-search{
+    background:#0d1020;
+
+    color:white;
+
+    border-color:#444968;
+}
+
+.start-menu-apps{
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:5px;
+
+    margin-top:10px;
+}
+
+.start-menu .app{
+    padding:11px;
+
+    border-radius:8px;
+
+    cursor:pointer;
+}
+
+.start-menu .app:hover{
+    background:#e1e5ec;
+}
+
+.wallpaper-nebula .start-menu .app:hover{
+    background:#292e49;
+}
+
+.start-account{
+    margin-top:12px;
+
+    padding-top:12px;
+
+    border-top:1px solid #d4d9e2;
+}
+
+.wallpaper-nebula .start-account{
+    border-color:#3d4260;
+}
+
+.start-account-button{
+    width:100%;
+
+    border:none;
+
+    background:#e1e5ec;
+
+    color:#171a21;
+
+    padding:11px;
+
+    border-radius:8px;
+
+    text-align:left;
+
+    cursor:pointer;
+}
+
+.wallpaper-nebula .start-account-button{
+    background:#292e49;
+
+    color:white;
+}
+
+.start-account-menu{
+    display:none;
+
+    margin-top:5px;
+
+    background:white;
+
+    border:1px solid #cbd1db;
+
+    border-radius:8px;
+
+    padding:5px;
+}
+
+.wallpaper-nebula .start-account-menu{
+    background:#20243a;
+
+    border-color:#444968;
+}
+
+.start-account-menu.show{
+    display:block;
+}
+
+.start-account-action{
+    width:100%;
+
+    border:none;
+
+    background:transparent;
+
+    color:#171a21;
+
+    text-align:left;
+
+    padding:9px;
+
+    border-radius:6px;
+
+    cursor:pointer;
+}
+
+.wallpaper-nebula .start-account-action{
+    color:white;
+}
+
+.start-account-action:hover{
+    background:#e1e5ec;
+}
+
+.wallpaper-nebula .start-account-action:hover{
+    background:#292e49;
+}
+
+
+/* =========================
+   WINDOWS
+========================= */
+
+.window{
+    display:none;
+
+    position:fixed;
+
+    left:50%;
+    top:50%;
+
+    transform:
+        translate(-50%,-50%);
+
+    background:#f7f8fb;
+
+    color:#171a21;
+
+    border:1px solid #cbd1db;
+
+    border-radius:10px;
+
+    box-shadow:
+        0 20px 50px rgba(0,0,0,.5);
+
+    overflow:hidden;
+
+    z-index:100;
+}
+
+.wallpaper-nebula .window{
+    background:#171a2b;
+
+    color:white;
+
+    border-color:#3d4260;
+}
+
+.window.maximized{
+    left:0!important;
+
+    top:0!important;
+
+    width:100vw!important;
+
+    height:calc(100vh - 64px)!important;
+
+    transform:none!important;
+
+    border-radius:0;
+}
+
+.window-title{
+    height:45px;
+
+    background:#e1e5ec;
+
+    display:flex;
+
+    align-items:center;
+
+    padding-left:15px;
+
+    font-weight:bold;
+
+    cursor:move;
+
+    user-select:none;
+}
+
+.wallpaper-nebula .window-title{
+    background:#292e49;
+
+    color:white;
+}
+
+.window-controls{
+    margin-left:auto;
+
+    display:flex;
+
+    height:100%;
+}
+
+.window-button{
+    width:45px;
+
+    border:none;
+
+    background:transparent;
+
+    color:#171a21;
+
+    cursor:pointer;
+}
+
+.wallpaper-nebula .window-button{
+    color:white;
+}
+
+.window-button:hover{
+    background:#d4d9e2;
+}
+
+.close-button:hover{
+    background:#c0392b!important;
+
+    color:white!important;
+}
+
+
+/* =========================
+   NOTEPAD
+========================= */
+
+.notepad{
+    width:700px;
+
+    height:500px;
+}
+
+.notepad-content{
+    height:calc(100% - 45px);
+
+    display:flex;
+
+    flex-direction:column;
+}
+
+.note-tabs{
+    height:43px;
+
+    display:flex;
+
+    gap:4px;
+
+    padding:5px;
+
+    background:#e1e5ec;
+}
+
+.new-note-button,
+.note-tab,
+.note-action{
+    border:none;
+
+    border-radius:6px;
+
+    padding:7px 12px;
+
+    cursor:pointer;
+}
+
+.new-note-button,
+.note-tab{
+    background:#d8dde6;
+}
+
+.note-tab.active{
+    background:#405a85;
+
+    color:white;
+}
+
+.note-editor{
+    flex:1;
+
+    width:100%;
+
+    resize:none;
+
+    border:none;
+
+    outline:none;
+
+    padding:15px;
+
+    background:white;
+
+    color:#171a21;
+
+    font-family:Consolas,monospace;
+
+    font-size:16px;
+}
+
+.notepad-toolbar{
+    height:45px;
+
+    display:flex;
+
+    gap:8px;
+
+    align-items:center;
+
+    padding:5px 10px;
+
+    background:#e1e5ec;
+}
+
+.note-action{
+    background:#d8dde6;
+
+    color:#171a21;
+}
+
+
+/* =========================
+   CALCULATOR
+========================= */
+
+.calculator{
+    width:320px;
+}
+
+.calculator-display{
+    height:80px;
+
+    background:white;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:flex-end;
+
+    padding:0 15px;
+
+    font-size:32px;
+
+    overflow:hidden;
+
+    color:#171a21;
+}
+
+.calculator-buttons{
+    display:grid;
+
+    grid-template-columns:
+        repeat(4,1fr);
+
+    gap:5px;
+
+    padding:10px;
+}
+
+.calc-button{
+    height:55px;
+
+    border:none;
+
+    border-radius:8px;
+
+    background:#d8dde6;
+
+    color:#171a21;
+
+    font-size:20px;
+
+    cursor:pointer;
+}
+
+.equals{
+    grid-column:span 2;
+}
+
+
+/* =========================
+   TERMINAL
+========================= */
+
+.terminal{
+    width:650px;
+
+    height:430px;
+
+    background:#080b0f!important;
+
+    color:white!important;
+}
+
+.terminal-body{
+    height:calc(100% - 45px);
+
+    padding:15px;
+
+    overflow-y:auto;
+
+    font-family:Consolas,monospace;
+}
+
+.terminal-output{
+    white-space:pre-wrap;
+
+    line-height:1.5;
+}
+
+.terminal-input-line{
+    display:flex;
+
+    margin-top:8px;
+}
+
+.terminal-prompt{
+    color:#72f772;
+
+    margin-right:8px;
+}
+
+.terminal-input{
+    flex:1;
+
+    background:transparent;
+
+    border:none;
+
+    outline:none;
+
+    color:white;
+
+    font-family:Consolas,monospace;
+}
+
+
+/* =========================
+   FILE EXPLORER
+========================= */
+
+.file-explorer{
+    width:760px;
+
+    height:540px;
+}
+
+.explorer-toolbar,
+.explorer-menu{
+    background:#e1e5ec;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:7px;
+
+    padding:8px;
+}
+
+.explorer-toolbar{
+    height:52px;
+}
+
+.explorer-toolbar button,
+.explorer-action{
+    background:#d8dde6;
+
+    border:none;
+
+    color:#171a21;
+
+    border-radius:7px;
+
+    padding:8px;
+
+    cursor:pointer;
+}
+
+#explorerPath{
+    background:white;
+
+    border-radius:7px;
+
+    padding:8px 12px;
+
+    flex:1;
+}
+
+.explorer-content{
+    height:calc(100% - 102px);
+
+    padding:18px;
+
+    background:white;
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(auto-fill,minmax(115px,1fr));
+
+    grid-auto-rows:115px;
+
+    gap:10px;
+
+    overflow-y:auto;
+
+    color:#171a21;
+}
+
+.explorer-item{
+    border-radius:8px;
+
+    padding:10px;
+
+    text-align:center;
+
+    cursor:pointer;
+}
+
+.explorer-item:hover{
+    background:#e1e5ec;
+}
+
+.explorer-icon{
+    font-size:42px;
+}
+
+.explorer-name{
+    margin-top:6px;
+
+    font-size:13px;
+
+    word-break:break-word;
+}
+
+.explorer-menu{
+    height:50px;
+}
+
+
+/* =========================
+   SETTINGS
+========================= */
+
+.settings{
+    width:760px;
+
+    height:540px;
+
+    background:#071329!important;
+
+    color:white!important;
+
+    border:1px solid #172b4d;
+}
+
+.settings-body{
+    height:calc(100% - 45px);
+
+    display:flex;
+
+    background:#071329;
+
+    color:white;
+}
+
+.settings-sidebar{
+    width:190px;
+
+    background:#050e20;
+
+    padding:10px;
+
+    border-right:1px solid #172b4d;
+}
+
+.settings-nav{
+    padding:12px;
+
+    border-radius:8px;
+
+    margin-bottom:4px;
+
+    cursor:pointer;
+
+    color:#dce7ff;
+}
+
+.settings-nav:hover{
+    background:#102345;
+}
+
+.settings-nav.active{
+    background:#173461;
+
+    color:white;
+}
+
+.settings-main{
+    flex:1;
+
+    padding:25px;
+
+    overflow:auto;
+
+    background:#071329;
+
+    color:white;
+}
+
+.settings-main h1{
+    margin-top:0;
+
+    color:white;
+}
+
+.setting-card{
+    background:#0b1a35;
+
+    border:1px solid #19345e;
+
+    border-radius:10px;
+
+    padding:18px;
+
+    margin-bottom:12px;
+
+    color:white;
+}
+
+.setting-card h3{
+    margin-top:0;
+
+    color:white;
+}
+
+.setting-card p{
+    color:#b9c8e3;
+
+    font-size:14px;
+}
+
+.theme-buttons{
+    display:flex;
+
+    gap:10px;
+
+    margin-top:12px;
+
+    flex-wrap:wrap;
+}
+
+.theme-button,
+.wallpaper-button{
+    border:1px solid #284b7d;
+
+    border-radius:8px;
+
+    padding:12px 18px;
+
+    background:#102345;
+
+    color:#eaf1ff;
+
+    cursor:pointer;
+}
+
+.theme-button:hover,
+.wallpaper-button:hover{
+    background:#173461;
+}
+
+.theme-button.active,
+.wallpaper-button.active{
+    background:#315b96;
+
+    color:white;
+
+    border-color:#4779ba;
+}
+
+.wallpaper-preview{
+    width:100%;
+
+    height:150px;
+
+    border-radius:12px;
+
+    margin-top:12px;
+
+    background:
+        radial-gradient(
+            circle at 72% 35%,
+            rgba(116,65,255,.75),
+            transparent 18%
+        ),
+        radial-gradient(
+            circle at 35% 65%,
+            rgba(0,145,255,.55),
+            transparent 22%
+        ),
+        radial-gradient(
+            circle at 58% 48%,
+            rgba(235,30,150,.45),
+            transparent 25%
+        ),
+        linear-gradient(
+            135deg,
+            #02030b,
+            #090025 45%,
+            #020713
+        );
+}
+
+
+/* =========================
+   ABOUT
+========================= */
+
+.about{
+    width:380px;
+
+    min-height:280px;
+}
+
+.about-content{
+    padding:25px;
+
+    text-align:center;
+}
+
+.about-logo{
+    font-size:50px;
+}
+
+.version{
+    color:#626b79;
+
+    margin:10px 0 25px;
+}
+
+.ayaaan{
+    margin-top:25px;
+
+    font-weight:bold;
+}
+
+
+/* =========================
+   POPUPS
+========================= */
+
+.overlay{
+    display:none;
+
+    position:fixed;
+
+    inset:0;
+
+    background:rgba(0,0,0,.55);
+
+    z-index:9000;
+
+    align-items:center;
+
+    justify-content:center;
+}
+
+.popup{
+    width:390px;
+
+    background:#f7f8fb;
+
+    border:1px solid #cbd1db;
+
+    border-radius:12px;
+
+    padding:22px;
+
+    box-shadow:
+        0 20px 60px rgba(0,0,0,.6);
+}
+
+.popup h2{
+    margin-top:0;
+}
+
+.popup-buttons{
+    display:flex;
+
+    justify-content:flex-end;
+
+    gap:8px;
+
+    margin-top:20px;
+}
+
+.popup-button{
+    border:none;
+
+    border-radius:7px;
+
+    padding:9px 15px;
+
+    background:#d8dde6;
+
+    cursor:pointer;
+}
+
+.popup-button.primary{
+    background:#405a85;
+
+    color:white;
+}
+
+.rename-input,
+.new-item-input{
+    width:100%;
+
+    padding:10px;
+
+    border:1px solid #c8ced8;
+
+    border-radius:7px;
+
+    background:white;
+
+    color:#171a21;
+}
+/* =========================
+   LIGHT MODE TEXT FIX
+   ========================= */
+
+body.light {
+    --text: #111827;
+    --secondary: #374151;
+}
+
+/* Make normal text dark */
+body.light * {
+    color: #111827;
+}
+
+/* Secondary / description text */
+body.light .secondary,
+body.light .description,
+body.light .small-text,
+body.light .setting-card p {
+    color: #374151 !important;
+}
+
+/* Inputs and buttons */
+body.light input,
+body.light select,
+body.light button {
+    color: #111827 !important;
+}
+
+/* Keep the avatar text white */
+body.light .avatar {
+    color: white !important;
+}
+
+/* Keep the login screen readable */
+body.light .login-box h1 {
+    color: white !important;
+}
+
+body.light .login-box p {
+    color: #cbd5e1 !important;
+}
+
+body.light .login-box input {
+    color: white !important;
+}
+
+body.light .login-box button {
+    color: white !important;
+}
+/* =========================
+   LIGHT MODE EXTRA FIXES
+   ========================= */
+
+/* SamOS version/tagline text */
+body.light .samos-version,
+body.light .version,
+body.light .tagline,
+body.light .subtitle {
+    color: #111827 !important;
+}
+
+/* Settings navigation */
+body.light .settings-nav {
+    background: #f5f7fc !important;
+}
+
+body.light .settings-nav button {
+    color: #111827 !important;
+    background: transparent !important;
+}
+
+body.light .settings-nav button:hover,
+body.light .settings-nav button.active {
+    background: #dbe5ff !important;
+    color: #111827 !important;
+}
+
+/* Settings window */
+body.light #settingsWindow {
+    background: #f5f7fc !important;
+}
+
+/* Settings cards */
+body.light .setting-card {
+    background: #ffffff !important;
+    color: #111827 !important;
+}
+/* =========================
+   LIGHT MODE - LOGIN FIX
+   ========================= */
+
+body.light #loginScreen {
+    background:
+        radial-gradient(circle at center, #e8eefc, #f5f7fc 70%) !important;
+}
+
+body.light .login-box {
+    background: rgba(255,255,255,.96) !important;
+    border: 1px solid rgba(0,0,0,.12) !important;
+    box-shadow: 0 25px 80px rgba(0,0,0,.18) !important;
+}
+
+body.light .login-box h1 {
+    color: #111827 !important;
+}
+
+body.light .login-box p {
+    color: #374151 !important;
+}
+
+body.light .login-box input {
+    background: #ffffff !important;
+    color: #111827 !important;
+    border: 1px solid rgba(0,0,0,.15) !important;
+}
+
+body.light .login-box input::placeholder {
+    color: #6b7280 !important;
+}
+
+body.light .login-box button {
+    color: white !important;
+}
+
+/* =========================
+   LIGHT MODE - SETTINGS
+   ========================= */
+
+body.light .settings-nav {
+    background: #f5f7fc !important;
+}
+
+body.light .settings-nav button {
+    background: transparent !important;
+    color: #111827 !important;
+}
+
+body.light .settings-nav button:hover,
+body.light .settings-nav button.active {
+    background: #dbe5ff !important;
+    color: #111827 !important;
+}
+
+/* =========================
+   LIGHT MODE - SAMOS TAGLINE
+   ========================= */
+
+body.light .samos-version,
+body.light .version,
+body.light .tagline,
+body.light .subtitle {
+    color: #111827 !important;
+}
+/* =========================
+   LIGHT MODE - CONTROL CENTRE
+   ========================= */
+
+/* Control Centre panel */
+body.light #controlCentre {
+    background: rgba(245,247,252,.96) !important;
+    border-color: rgba(0,0,0,.12) !important;
+}
+
+/* Control Centre button */
+body.light #taskbar .system-area .task-app {
+    color: #111827 !important;
+    background: transparent !important;
+}
+
+body.light #taskbar .system-area .task-app:hover {
+    background: rgba(0,0,0,.08) !important;
+}
+
+/* Quick settings buttons */
+body.light .quick {
+    background: rgba(255,255,255,.85) !important;
+    border-color: rgba(0,0,0,.12) !important;
+    color: #111827 !important;
+}
+
+body.light .quick:hover {
+    background: rgba(0,0,0,.08) !important;
+}
+
+/* Control Centre text */
+body.light .control-title,
+body.light .slider-title,
+body.light .quick-icon {
+    color: #111827 !important;
+}
+/* =========================
+   LIGHT MODE - CONTROL CENTRE BUTTON
+   ========================= */
+
+body.light #taskbar button[title="Control Centre"] {
+    background: #ffffff !important;
+    color: #111827 !important;
+    border: 1px solid rgba(0,0,0,.12) !important;
+}
+
+body.light #taskbar button[title="Control Centre"]:hover {
+    background: #e5e7eb !important;
+    color: #111827 !important;
+}
+/* =========================
+   LIGHT MODE - TASKBAR
+   ========================= */
+
+body.light #taskbar {
+    background: rgba(245, 247, 252, 0.96) !important;
+    border-color: rgba(0, 0, 0, 0.12) !important;
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.15) !important;
+}
+
+body.light #taskbar .start-button,
+body.light #taskbar .task-app {
+    background: transparent !important;
+    color: #111827 !important;
+}
+
+body.light #taskbar .start-button:hover,
+body.light #taskbar .task-app:hover {
+    background: rgba(0, 0, 0, 0.08) !important;
+}
+
+body.light #taskbar .search {
+    background: rgba(255, 255, 255, 0.9) !important;
+    color: #111827 !important;
+    border-color: rgba(0, 0, 0, 0.12) !important;
+}
+
+body.light #taskbar .search::placeholder {
+    color: #6b7280 !important;
+}
+
+body.light #taskbar .battery,
+body.light #taskbar .clock,
+body.light #taskbar .customize-btn {
+    color: #111827 !important;
+}
+
+/* =========================================
+   SAMOS LIGHT MODE - APP & BUTTON FIX
+   ========================================= */
+
+/* Windows / app backgrounds */
+body.light .window {
+    background: #f5f7fc !important;
+    color: #111827 !important;
+}
+
+/* App title bars */
+body.light .window-header {
+    background: #ffffff !important;
+    color: #111827 !important;
+    border-bottom-color: #d1d5db !important;
+}
+
+/* Window titles */
+body.light .window-header h2 {
+    color: #111827 !important;
+}
+
+/* Close buttons */
+body.light .close {
+    background: transparent !important;
+    color: #111827 !important;
+}
+
+body.light .close:hover {
+    background: rgba(0,0,0,.08) !important;
+}
+
+/* Settings navigation */
+body.light .settings-nav {
+    background: #f5f7fc !important;
+}
+
+body.light .settings-nav button {
+    background: transparent !important;
+    color: #111827 !important;
+}
+
+body.light .settings-nav button:hover,
+body.light .settings-nav button.active {
+    background: #dbe5ff !important;
+    color: #111827 !important;
+}
+
+/* Settings cards */
+body.light .setting-card {
+    background: #ffffff !important;
+    color: #111827 !important;
+}
+
+/* Calculator */
+body.light .calc-display {
+    background: #ffffff !important;
+    color: #111827 !important;
+}
+
+body.light .calc-grid button {
+    background: #ffffff !important;
+    color: #111827 !important;
+    border: 1px solid #d1d5db !important;
+}
+
+body.light .calc-grid button:hover {
+    background: #e5e7eb !important;
+}
+
+/* Control Centre */
+body.light #controlCentre {
+    background: #f5f7fc !important;
+    color: #111827 !important;
+    border-color: #d1d5db !important;
+}
+
+/* Control Centre quick buttons */
+body.light #controlCentre .quick {
+    background: #ffffff !important;
+    color: #111827 !important;
+    border-color: #d1d5db !important;
+}
+
+body.light #controlCentre .quick:hover {
+    background: #e5e7eb !important;
+}
+
+/* Control Centre slider labels */
+body.light #controlCentre .control-title,
+body.light #controlCentre .slider-title {
+    color: #111827 !important;
+}
+
+/* Taskbar buttons */
+body.light #taskbar .task-app,
+body.light #taskbar .start-button,
+body.light #taskbar .customize-btn {
+    color: #111827 !important;
+}
+
+/* Search box */
+body.light #taskbar .search {
+    background: #ffffff !important;
+    color: #111827 !important;
+    border-color: #d1d5db !important;
+}
+
+body.light #taskbar .search::placeholder {
+    color: #6b7280 !important;
+}
+
+/* Notifications */
+body.light .notification {
+    background: #ffffff !important;
+    color: #111827 !important;
+    border-color: #d1d5db !important;
+}
+
+</style>
+</head>
+
+
+<body class="light wallpaper-nebula">
+
+
+<!-- =========================
+     LOGIN SCREEN
+========================= -->
+
+<div id="loginScreen">
+
+<div class="login-box" id="accountSelector">
+
+<div class="login-logo">
+🖥️
+</div>
+
+<h1>
+Welcome to SamOS
+</h1>
+
+<p>
+Select an account
+</p>
+
+<div id="accountList"></div>
+
+<button
+class="account-button add-account"
+onclick="showAddAccount()">
+
+➕ Add account
+
+</button>
+
+</div>
+
+
+<div
+class="login-box"
+id="passwordScreen"
+style="display:none">
+
+<div class="login-logo">
+🖥️
+</div>
+
+<h1>
+SamOS
+</h1>
+
+<div class="login-user">
+👤
+</div>
+
+<h2 id="selectedUsername">
+Samim
+</h2>
+
+<input
+id="loginPassword"
+type="password"
+placeholder="Password"
+onkeydown="
+if(event.key==='Enter')login()
+">
+
+<button onclick="login()">
+Log in
+</button>
+
+<button
+class="account-button"
+onclick="backToAccounts()">
+
+← Back
+
+</button>
+
+<div id="loginError"></div>
+
+</div>
+
+
+<div
+class="login-box"
+id="addAccountScreen"
+style="display:none">
+
+<div class="login-logo">
+👤
+</div>
+
+<h1>
+New Account
+</h1>
+
+<input
+id="newUsername"
+placeholder="Username"
+maxlength="20"
+>
+
+<input
+id="newPassword"
+type="password"
+placeholder="Password"
+maxlength="30"
+>
+
+<button onclick="createAccount()">
+Create account
+</button>
+
+<button
+class="account-button"
+onclick="backToAccounts()">
+
+← Back
+
+</button>
+
+<div id="accountError"></div>
+
+</div>
+
+</div>
+
+
+<!-- =========================
+     DESKTOP
+========================= -->
+
+<div class="desktop">
+
+<div
+class="welcome"
+id="welcomeMessage">
+
+Welcome to SamOS, Samim 👋
+
+</div>
+
+<div class="subtitle">
+
+SamOS v2.3 — Your computer. Your rules.
+
+</div>
+
+
+<div class="desktop-icons">
+
+<div
+class="desktop-icon"
+ondblclick="openNotepad()">
+
+<div class="icon-picture">
+📝
+</div>
+
+<div class="icon-name">
+Notepad
+</div>
+
+</div>
+
+
+<div
+class="desktop-icon"
+ondblclick="openCalculator()">
+
+<div class="icon-picture">
+🖩
+</div>
+
+<div class="icon-name">
+Calculator
+</div>
+
+</div>
+
+
+<div
+class="desktop-icon"
+ondblclick="openTerminal()">
+
+<div class="icon-picture">
+💻
+</div>
+
+<div class="icon-name">
+Terminal
+</div>
+
+</div>
+
+
+<div
+class="desktop-icon"
+ondblclick="openFileExplorer()">
+
+<div class="icon-picture">
+📁
+</div>
+
+<div class="icon-name">
+File Explorer
+</div>
+
+</div>
+
+
+<div
+class="desktop-icon"
+ondblclick="openSettings()">
+
+<div class="icon-picture">
+⚙️
+</div>
+
+<div class="icon-name">
+Settings
+</div>
+
+</div>
+
+
+<div class="desktop-icon">
+
+<div class="icon-picture">
+🗑️
+</div>
+
+<div class="icon-name">
+Recycle Bin
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- =========================
+     START MENU
+========================= -->
+
+<div
+class="start-menu"
+id="startMenu">
+
+<h2>
+💎 SamOS
+</h2>
+
+<input
+class="start-menu-search"
+id="startMenuSearch"
+placeholder="🔎 Search apps..."
+oninput="searchStartMenuApps()"
+>
+
+<div
+class="start-menu-apps"
+id="startMenuApps">
+
+<div
+class="app"
+onclick="openNotepad()">
+
+📝 Notepad
+
+</div>
+
+
+<div
+class="app"
+onclick="openCalculator()">
+
+🖩 Calculator
+
+</div>
+
+
+<div
+class="app"
+onclick="openTerminal()">
+
+💻 Terminal
+
+</div>
+
+
+<div
+class="app"
+onclick="openFileExplorer()">
+
+📁 File Explorer
+
+</div>
+
+
+<div
+class="app"
+onclick="openSettings()">
+
+⚙️ Settings
+
+</div>
+
+
+<div
+class="app"
+onclick="openAbout()">
+
+ⓘ About SamOS
+
+</div>
+
+</div>
+
+
+<div class="start-account">
+
+<button
+class="start-account-button"
+onclick="toggleStartAccount()">
+
+👤
+<span id="startAccountName">
+Samim
+</span>
+▾
+
+</button>
+
+
+<div
+class="start-account-menu"
+id="startAccountMenu">
+
+<button
+class="start-account-action"
+onclick="switchAccount()">
+
+🔄 Switch account
+
+</button>
+
+
+<button
+class="start-account-action"
+onclick="logout()">
+
+🚪 Sign out
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- =========================
+     NOTEPAD
+========================= -->
+
+<div
+class="window notepad"
+id="notepad">
+
+<div
+class="window-title"
+onmousedown="startDrag(event,'notepad')">
+
+📝 SamOS Notepad
+
+<div class="window-controls">
+
+<button
+class="window-button"
+onclick="maximizeWindow('notepad')">
+
+⛶
+
+</button>
+
+<button
+class="window-button close-button"
+onclick="requestCloseNotepad()">
+
+✕
+
+</button>
+
+</div>
+
+</div>
+
+
+<div class="notepad-content">
+
+<div
+class="note-tabs"
+id="noteTabs">
+</div>
+
+
+<textarea
+class="note-editor"
+id="noteEditor"
+placeholder="Start typing..."
+oninput="updateCurrentNote()">
+</textarea>
+
+
+<div class="notepad-toolbar">
+
+<button
+class="note-action"
+onclick="saveCurrentNoteToSamOS()">
+
+💾 Save
+
+</button>
+
+<button
+class="note-action"
+onclick="renameCurrentNote()">
+
+Rename
+
+</button>
+
+<button
+class="note-action"
+onclick="requestCloseCurrentNote()">
+
+Close Note
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- =========================
+     CALCULATOR
+========================= -->
+
+<div
+class="window calculator"
+id="calculator">
+
+<div
+class="window-title"
+onmousedown="startDrag(event,'calculator')">
+
+🖩 Calculator
+
+<div class="window-controls">
+
+<button
+class="window-button"
+onclick="maximizeWindow('calculator')">
+
+⛶
+
+</button>
+
+<button
+class="window-button close-button"
+onclick="closeCalculator()">
+
+✕
+
+</button>
+
+</div>
+
+</div>
+
+
+<div
+class="calculator-display"
+id="display">
+
+0
+
+</div>
+
+
+<div class="calculator-buttons">
+
+<button
+class="calc-button"
+onclick="clearCalculator()">
+
+C
+
+</button>
+
+<button
+class="calc-button"
+onclick="addToCalculator('(')">
+
+(
+
+</button>
+
+<button
+class="calc-button"
+onclick="addToCalculator(')')">
+
+)
+
+</button>
+
+<button
+class="calc-button"
+onclick="addToCalculator('/')">
+
+÷
+
+</button>
+
+
+<button
+class="calc-button"
+onclick="addToCalculator('7')">
+
+7
+
+</button>
+
+<button
+class="calc-button"
+onclick="addToCalculator('8')">
+
+8
+
+</button>
+
+<button
+class="calc-button"
+onclick="addToCalculator('9')">
+
+9
+
+</button>
+
+<button
+class="calc-button"
+onclick="addToCalculator('*')">
+
+×
+
+</button>
+
+
+<button
+class="calc-button"
+onclick="addToCalculator('4')">
+
+4
+
+</button>
+
+<button
+class="calc-button"
+onclick="addToCalculator('5')">
+
+5
+
+</button>
+
+<button
+class="calc-button"
+onclick="addToCalculator('6')">
+
+6
+
+</button>
+
+<button
+class="calc-button"
+onclick="addToCalculator('-')">
+
+−
+
+</button>
+
+
+<button
+class="calc-button"
+onclick="addToCalculator('1')">
+
+1
+
+</button>
+
+<button
+class="calc-button"
+onclick="addToCalculator('2')">
+
+2
+
+</button>
+
+<button
+class="calc-button"
+onclick="addToCalculator('3')">
+
+3
+
+</button>
+
+<button
+class="calc-button"
+onclick="addToCalculator('+')">
+
++
+
+</button>
+
+
+<button
+class="calc-button"
+onclick="addToCalculator('0')">
+
+0
+
+</button>
+
+<button
+class="calc-button"
+onclick="addToCalculator('.')">
+
+.
+
+</button>
+
+<button
+class="calc-button equals"
+onclick="calculate()">
+
+=
+
+</button>
+
+</div>
+
+</div>
+
+
+<!-- =========================
+     TERMINAL
+========================= -->
+
+<div
+class="window terminal"
+id="terminal">
+
+<div
+class="window-title"
+onmousedown="startDrag(event,'terminal')">
+
+💻 SamOS Terminal
+
+<div class="window-controls">
+
+<button
+class="window-button"
+onclick="maximizeWindow('terminal')">
+
+⛶
+
+</button>
+
+<button
+class="window-button close-button"
+onclick="closeTerminal()">
+
+✕
+
+</button>
+
+</div>
+
+</div>
+
+
+<div class="terminal-body">
+
+<div
+class="terminal-output"
+id="terminalOutput">
+
+SamOS Terminal v2.3
+Type "help" to see available commands.
+
+</div>
+
+
+<div class="terminal-input-line">
+
+<span class="terminal-prompt">
+SamOS&gt;
+</span>
+
+<input
+class="terminal-input"
+id="terminalInput"
+autocomplete="off"
+onkeydown="terminalKey(event)"
+>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- =========================
+     FILE EXPLORER
+========================= -->
+
+<div
+class="window file-explorer"
+id="fileExplorer">
+
+<div
+class="window-title"
+onmousedown="startDrag(event,'fileExplorer')">
+
+📁 SamOS File Explorer
+
+<div class="window-controls">
+
+<button
+class="window-button"
+onclick="maximizeWindow('fileExplorer')">
+
+⛶
+
+</button>
+
+<button
+class="window-button close-button"
+onclick="closeFileExplorer()">
+
+✕
+
+</button>
+
+</div>
+
+</div>
+
+
+<div class="explorer-toolbar">
+
+<button onclick="explorerBack()">
+←
+</button>
+
+<button onclick="explorerHome()">
+🏠
+</button>
+
+<button onclick="renderExplorer()">
+🔄
+</button>
+
+<div id="explorerPath">
+This PC
+</div>
+
+</div>
+
+
+<div
+class="explorer-content"
+id="explorerContent">
+</div>
+
+
+<div class="explorer-menu">
+
+<button
+class="explorer-action"
+onclick="createFolder()">
+
+📁 New Folder
+
+</button>
+
+<button
+class="explorer-action"
+onclick="createTextFile()">
+
+📄 New Text File
+
+</button>
+
+<button
+class="explorer-action"
+onclick="renameSelected()">
+
+✏️ Rename
+
+</button>
+
+<button
+class="explorer-action"
+onclick="deleteSelected()">
+
+🗑️ Delete
+
+</button>
+
+</div>
+
+</div>
+
+
+<!-- =========================
+     SETTINGS
+========================= -->
+
+<div
+class="window settings"
+id="settings">
+
+<div
+class="window-title"
+onmousedown="startDrag(event,'settings')">
+
+⚙️ SamOS Settings
+
+<div class="window-controls">
+
+<button
+class="window-button"
+onclick="maximizeWindow('settings')">
+
+⛶
+
+</button>
+
+<button
+class="window-button close-button"
+onclick="closeSettings()">
+
+✕
+
+</button>
+
+</div>
+
+</div>
+
+
+<div class="settings-body">
+
+<div class="settings-sidebar">
+
+<div
+class="settings-nav active"
+onclick="showSettingsPage('taskbar')">
+
+📌 Taskbar
+
+</div>
+
+<div
+class="settings-nav"
+onclick="showSettingsPage('appearance')">
+
+🎨 Appearance
+
+</div>
+
+<div
+class="settings-nav"
+onclick="showSettingsPage('accounts')">
+
+👤 Accounts
+
+</div>
+
+<div
+class="settings-nav"
+onclick="showSettingsPage('about')">
+
+ℹ️ About
+
+</div>
+
+</div>
+
+
+<div
+class="settings-main"
+id="settingsMain">
+</div>
+
+</div>
+
+</div>
+
+
+<!-- =========================
+     ABOUT
+========================= -->
+
+<div
+class="window about"
+id="about">
+
+<div
+class="window-title"
+onmousedown="startDrag(event,'about')">
+
+ℹ️ About SamOS
+
+<div class="window-controls">
+
+<button
+class="window-button close-button"
+onclick="closeAbout()">
+
+✕
+
+</button>
+
+</div>
+
+</div>
+
+
+<div class="about-content">
+
+<div class="about-logo">
+🖥️
+</div>
+
+<h1>
+SamOS
+</h1>
+
+<div class="version">
+Version 2.3
+</div>
+
+<div>
+Made by Samim
+</div>
+
+<div class="ayaaan">
+bet u cant do this AYAAN
+</div>
+
+</div>
+
+</div>
+
+
+<!-- =========================
+     RENAME POPUP
+========================= -->
+
+<div
+class="overlay"
+id="renameOverlay">
+
+<div class="popup">
+
+<h2>
+✏️ Rename
+</h2>
+
+<input
+class="rename-input"
+id="renameInput"
+>
+
+<div class="popup-buttons">
+
+<button
+class="popup-button"
+onclick="cancelRename()">
+
+Cancel
+
+</button>
+
+<button
+class="popup-button primary"
+onclick="finishRename()">
+
+Rename
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- =========================
+     NEW ITEM POPUP
+========================= -->
+
+<div
+class="overlay"
+id="newItemOverlay">
+
+<div class="popup">
+
+<h2 id="newItemTitle">
+New Item
+</h2>
+
+<input
+class="new-item-input"
+id="newItemInput"
+placeholder="Enter a name"
+>
+
+<div class="popup-buttons">
+
+<button
+class="popup-button"
+onclick="cancelNewItem()">
+
+Cancel
+
+</button>
+
+<button
+class="popup-button primary"
+onclick="finishNewItem()">
+
+Create
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- =========================
+     CONTROL CENTRE
+========================= -->
+
+<div
+class="control-centre"
+id="controlCentre">
+
+<div class="control-header">
+
+<div>
+
+<h2>
+Control Centre
+</h2>
+
+<span>
+Quick settings
+</span>
+
+</div>
+
+<button onclick="openSettings()">
+⚙️
+</button>
+
+</div>
+
+
+<div class="quick-settings">
+
+<button
+id="lightModeButton"
+class="quick-setting"
+onclick="setTheme('light')">
+
+☀️
+
+<span>
+Light Mode
+</span>
+
+</button>
+
+
+<button
+id="darkModeButton"
+class="quick-setting"
+onclick="setTheme('dark')">
+
+🌙
+
+<span>
+Dark Mode
+</span>
+
+</button>
+
+
+<button
+id="dndButton"
+class="quick-setting"
+onclick="toggleDoNotDisturb()">
+
+🔕
+
+<span id="dndText">
+Do Not Disturb
+</span>
+
+</button>
+
+
+<button
+class="quick-setting"
+onclick="showNotification(
+'SamOS',
+'No new notifications!'
+)">
+
+🔔
+
+<span>
+Notifications
+</span>
+
+</button>
+
+</div>
+
+
+<!-- BRIGHTNESS -->
+
+<div class="control-section">
+
+<div class="control-label">
+
+<span>
+🔆 Brightness
+</span>
+
+<span id="brightnessValue">
+100%
+</span>
+
+</div>
+
+
+<input
+type="range"
+min="30"
+max="100"
+value="100"
+id="brightnessSlider"
+oninput="changeBrightness(this.value)"
+>
+
+</div>
+
+
+<!-- VOLUME -->
+
+<div class="control-section">
+
+<div class="control-label">
+
+<span>
+🔊 Volume
+</span>
+
+<span id="volumeValue">
+100%
+</span>
+
+</div>
+
+
+<input
+type="range"
+min="0"
+max="100"
+value="100"
+id="volumeSlider"
+oninput="changeVolume(this.value)"
+>
+
+</div>
+
+
+<!-- BATTERY -->
+
+<div class="battery-card">
+
+<div
+class="battery-icon"
+id="batteryIcon">
+
+🔋
+
+</div>
+
+<div>
+
+<strong>
+Battery
+</strong>
+
+<div id="batteryStatus">
+Checking battery...
+</div>
+
+</div>
+
+</div>
+
+
+<button
+class="open-settings-button"
+onclick="openSettings()">
+
+⚙️ Open Settings
+
+</button>
+
+</div>
+
+
+<!-- =========================
+     TASKBAR
+========================= -->
+
+<div class="taskbar">
+
+<button
+class="customize-taskbar"
+onclick="openTaskbarSettings()">
+
+⚙️ Customize Taskbar
+
+</button>
+
+
+<div class="taskbar-center">
+
+<button
+class="diamond-button"
+onclick="toggleStart()">
+
+💎
+
+</button>
+
+
+<input
+class="app-search"
+id="appSearch"
+placeholder="🔎 Search apps..."
+oninput="searchApps()"
+>
+
+
+<button
+class="task-app"
+id="taskNotepad"
+onclick="
+toggleApp('notepad',openNotepad)
+">
+
+📝
+
+</button>
+
+
+<button
+class="task-app"
+id="taskCalculator"
+onclick="
+toggleApp('calculator',openCalculator)
+">
+
+🖩
+
+</button>
+
+
+<button
+class="task-app"
+id="taskExplorer"
+onclick="
+toggleApp(
+'fileExplorer',
+openFileExplorer
+)
+">
+
+📁
+
+</button>
+
+
+<button
+class="task-app"
+id="taskTerminal"
+onclick="
+toggleApp(
+'terminal',
+openTerminal
+)
+">
+
+💻
+
+</button>
+
+
+<button
+class="task-app"
+id="taskSettings"
+onclick="
+toggleApp(
+'settings',
+openSettings
+)
+">
+
+⚙️
+
+</button>
+
+</div>
+
+
+<div class="taskbar-right">
+
+<button
+class="control-centre-button"
+onclick="toggleControlCentre()">
+
+⚙️ Control Centre
+
+</button>
+
+
+<div class="clock-container">
+
+<div
+class="clock"
+id="clock">
+
+00:00
+
+</div>
+
+<div
+class="date"
+id="date">
+
+00/00/0000
+
+</div>
+
+</div>
+
+
+<button
+class="system-button"
+onclick="openAbout()">
+
+ⓘ
+
+</button>
+
+</div>
+
+</div>
+
+
+<!-- ==================================================
+     IMPORTANT:
+     BRIGHTNESS OVERLAY IS LAST IN THE HTML SO IT CAN
+     COVER THE WHOLE SAMOS INTERFACE.
+     
+     LOGIN SCREEN has z-index 10000,
+     so it stays visible above the overlay.
+================================================== -->
+
+<div id="samosBrightnessOverlay"></div>
+
+
+<script>
+
+/* =========================
+   THEME
+========================= */
+
+let currentTheme =
+localStorage.getItem("SamOS_Theme") || "light";
+
+let currentWallpaper =
+localStorage.getItem("SamOS_Wallpaper") || "nebula";
+
+
+function applyAppearance(){
+
+    document.body.classList.toggle(
+        "light",
+        currentTheme==="light"
+    );
+
+    document.body.classList.toggle(
+        "wallpaper-nebula",
+        currentWallpaper==="nebula"
+    );
+
+    updateControlCentreTheme();
+
+}
+
+
+/* =========================
+   ENTIRE SAMOS BRIGHTNESS
+========================= */
+
+function changeBrightness(value){
+
+    document.getElementById(
+        "brightnessValue"
+    ).textContent =
+        value + "%";
+
+
+    /*
+       The brightness is now controlled by
+       a full-screen overlay.
+
+       This means it affects:
+       - Desktop
+       - Desktop icons
+       - Taskbar
+       - Start menu
+       - Settings
+       - Calculator
+       - Terminal
+       - File Explorer
+       - Control Centre
+       - Other SamOS windows
+
+       The overlay does NOT capture clicks.
+    */
+
+    document.documentElement.style.setProperty(
+        "--samos-brightness",
+        value / 100
+    );
+
+}
+
+
+function setTheme(theme){
+
+    currentTheme=theme;
+
+    localStorage.setItem(
+        "SamOS_Theme",
+        theme
+    );
+
+    applyAppearance();
+
+    showSettingsPage("appearance");
+
+}
+
+
+function setWallpaper(wallpaper){
+
+    currentWallpaper=wallpaper;
+
+    localStorage.setItem(
+        "SamOS_Wallpaper",
+        wallpaper
+    );
+
+    applyAppearance();
+
+    showSettingsPage("appearance");
+
+}
+
+
+/* =========================
+   ACCOUNTS
+========================= */
+
+let accounts =
+JSON.parse(
+    localStorage.getItem(
+        "SamOS_Accounts"
+    ) || "null"
+);
+
+
+if(!accounts){
+
+    accounts={
+        Samim:{
+            password:"1234"
+        },
+
+        Guest:{
+            password:""
+        }
+    };
+
+}
+
+
+if(!accounts.Guest){
+
+    accounts.Guest={
+        password:""
+    };
+
+}
+
+
+accounts.Guest.password="";
+
+
+localStorage.setItem(
+    "SamOS_Accounts",
+    JSON.stringify(accounts)
+);
+
+
+let selectedAccount=null;
+
+
+function renderAccounts(){
+
+    const list =
+        document.getElementById(
+            "accountList"
+        );
+
+    list.innerHTML="";
+
+
+    Object.keys(accounts).forEach(
+        username=>{
+
+            const button =
+                document.createElement(
+                    "button"
+                );
+
+            button.className =
+                "account-button";
+
+            button.textContent =
+                "👤 "+username;
+
+            button.onclick=()=>{
+                selectAccount(username);
+            };
+
+            list.appendChild(button);
+
+        }
+    );
+
+}
+
+
+function selectAccount(username){
+
+    selectedAccount=username;
+
+
+    document.getElementById(
+        "welcomeMessage"
+    ).textContent =
+        "Welcome to SamOS, "+
+        username+
+        " 👋";
+
+
+    document.getElementById(
+        "startAccountName"
+    ).textContent=username;
+
+
+    if(
+        username==="Guest" ||
+        accounts[username].password===""
+    ){
+
+        document.getElementById(
+            "loginScreen"
+        ).style.display="none";
+
+        return;
+
+    }
+
+
+    document.getElementById(
+        "accountSelector"
+    ).style.display="none";
+
+
+    document.getElementById(
+        "passwordScreen"
+    ).style.display="block";
+
+
+    document.getElementById(
+        "selectedUsername"
+    ).textContent=username;
+
+
+    document.getElementById(
+        "loginPassword"
+    ).value="";
+
+
+    document.getElementById(
+        "loginError"
+    ).textContent="";
+
+
+    setTimeout(()=>{
+
+        document.getElementById(
+            "loginPassword"
+        ).focus();
+
+    },50);
+
+}
+
+
+function backToAccounts(){
+
+    document.getElementById(
+        "passwordScreen"
+    ).style.display="none";
+
+
+    document.getElementById(
+        "addAccountScreen"
+    ).style.display="none";
+
+
+    document.getElementById(
+        "accountSelector"
+    ).style.display="block";
+
+
+    renderAccounts();
+
+}
+
+
+function showAddAccount(){
+
+    document.getElementById(
+        "accountSelector"
+    ).style.display="none";
+
+
+    document.getElementById(
+        "passwordScreen"
+    ).style.display="none";
+
+
+    document.getElementById(
+        "addAccountScreen"
+    ).style.display="block";
+
+
+    document.getElementById(
+        "newUsername"
+    ).value="";
+
+
+    document.getElementById(
+        "newPassword"
+    ).value="";
+
+
+    document.getElementById(
+        "accountError"
+    ).textContent="";
+
+}
+
+
+function createAccount(){
+
+    const username =
+        document.getElementById(
+            "newUsername"
+        ).value.trim();
+
+
+    const password =
+        document.getElementById(
+            "newPassword"
+        ).value;
+
+
+    const error =
+        document.getElementById(
+            "accountError"
+        );
+
+
+    if(!username){
+
+        error.style.color="#d33";
+
+        error.textContent =
+            "Please enter a username.";
+
+        return;
+
+    }
+
+
+    if(accounts[username]){
+
+        error.style.color="#d33";
+
+        error.textContent =
+            "That account already exists.";
+
+        return;
+
+    }
+
+
+    if(!password){
+
+        error.style.color="#d33";
+
+        error.textContent =
+            "Please enter a password.";
+
+        return;
+
+    }
+
+
+    accounts[username]={
+        password:password
+    };
+
+
+    localStorage.setItem(
+        "SamOS_Accounts",
+        JSON.stringify(accounts)
+    );
+
+
+    renderAccounts();
+
+
+    error.style.color="#16833c";
+
+    error.textContent =
+        "Account created! ✅";
+
+
+    setTimeout(()=>{
+
+        backToAccounts();
+
+    },700);
+
+}
+
+
+function login(){
+
+    const error =
+        document.getElementById(
+            "loginError"
+        );
+
+
+    const password =
+        document.getElementById(
+            "loginPassword"
+        ).value;
+
+
+    const account =
+        accounts[selectedAccount];
+
+
+    if(
+        account &&
+        password===account.password
+    ){
+
+        error.style.color="#16833c";
+
+        error.textContent =
+            "Password correct ✅";
+
+
+        setTimeout(()=>{
+
+            document.getElementById(
+                "loginScreen"
+            ).style.display="none";
+
+            error.textContent="";
+
+        },500);
+
+
+    }else{
+
+        error.style.color="#d33";
+
+        error.textContent =
+            "❌ Incorrect password";
+
+
+        document.getElementById(
+            "loginPassword"
+        ).value="";
+
+    }
+
+}
+
+
+function logout(){
+
+    closeStart();
+
+    closeControlCentre();
+
+
+    document.querySelectorAll(
+        ".window"
+    ).forEach(win=>{
+
+        win.style.display="none";
+
+        win.classList.remove(
+            "maximized"
+        );
+
+    });
+
+
+    document.getElementById(
+        "loginScreen"
+    ).style.display="flex";
+
+
+    document.getElementById(
+        "accountSelector"
+    ).style.display="block";
+
+
+    document.getElementById(
+        "passwordScreen"
+    ).style.display="none";
+
+
+    document.getElementById(
+        "addAccountScreen"
+    ).style.display="none";
+
+
+    selectedAccount=null;
+
+    renderAccounts();
+
+    updateTaskIndicators();
+
+}
+
+
+function switchAccount(){
+
+    logout();
+
+}
+
+
+/* =========================
+   START MENU
+========================= */
+
+function toggleStart(){
+
+    const menu =
+        document.getElementById(
+            "startMenu"
+        );
+
+
+    menu.style.display =
+        menu.style.display==="block"
+        ?"none"
+        :"block";
+
+
+    document.getElementById(
+        "startAccountMenu"
+    ).classList.remove(
+        "show"
+    );
+
+}
+
+
+function closeStart(){
+
+    document.getElementById(
+        "startMenu"
+    ).style.display="none";
+
+
+    document.getElementById(
+        "startAccountMenu"
+    ).classList.remove(
+        "show"
+    );
+
+}
+
+
+function toggleStartAccount(){
+
+    document.getElementById(
+        "startAccountMenu"
+    ).classList.toggle(
+        "show"
+    );
+
+}
+
+
+function searchStartMenuApps(){
+
+    const input =
+        document.getElementById(
+            "startMenuSearch"
+        ).value.toLowerCase();
+
+
+    document.querySelectorAll(
+        "#startMenuApps .app"
+    ).forEach(app=>{
+
+        app.style.display =
+            app.textContent
+            .toLowerCase()
+            .includes(input)
+            ?"block"
+            :"none";
+
+    });
+
+}
+
+
+/* =========================
+   APP SEARCH
+========================= */
+
+function searchApps(){
+
+    const input =
+        document.getElementById(
+            "appSearch"
+        ).value
+        .toLowerCase()
+        .trim();
+
+
+    if(!input)return;
+
+
+    const apps=[
+
+        ["notepad",openNotepad],
+
+        ["calculator",openCalculator],
+
+        ["file explorer",openFileExplorer],
+
+        ["terminal",openTerminal],
+
+        ["settings",openSettings],
+
+        ["about",openAbout]
+
+    ];
+
+
+    const match =
+        apps.find(
+            x=>x[0].includes(input)
+        );
+
+
+    if(match){
+
+        match[1]();
+
+        document.getElementById(
+            "appSearch"
+        ).value="";
+
+    }
+
+}
+
+
+/* =========================
+   TASKBAR
+========================= */
+
+function updateTaskIndicators(){
+
+    const apps={
+
+        notepad:"taskNotepad",
+
+        calculator:"taskCalculator",
+
+        fileExplorer:"taskExplorer",
+
+        terminal:"taskTerminal",
+
+        settings:"taskSettings"
+
+    };
+
+
+    Object.keys(apps).forEach(id=>{
+
+        const win =
+            document.getElementById(id);
+
+
+        const button =
+            document.getElementById(
+                apps[id]
+            );
+
+
+        if(!button)return;
+
+
+        button.classList.toggle(
+            "running",
+            win.style.display==="block"
+        );
+
+    });
+
+}
+
+
+function toggleApp(id,openFunction){
+
+    const win =
+        document.getElementById(id);
+
+
+    if(
+        win.style.display==="block"
+    ){
+
+        win.style.display="none";
+
+    }else{
+
+        openFunction();
+
+    }
+
+
+    updateTaskIndicators();
+
+}
+
+
+/* =========================
+   CONTROL CENTRE
+========================= */
+
+let doNotDisturb=false;
+
+
+function toggleControlCentre(){
+
+    const panel =
+        document.getElementById(
+            "controlCentre"
+        );
+
+
+    panel.classList.toggle(
+        "show"
+    );
+
+
+    if(
+        panel.classList.contains("show")
+    ){
+
+        updateBattery();
+
+    }
+
+}
+
+
+function closeControlCentre(){
+
+    document.getElementById(
+        "controlCentre"
+    ).classList.remove(
+        "show"
+    );
+
+}
+
+
+function changeVolume(value){
+
+    document.getElementById(
+        "volumeValue"
+    ).textContent =
+        value+"%";
+
+}
+
+
+function updateControlCentreTheme(){
+
+    const light =
+        document.getElementById(
+            "lightModeButton"
+        );
+
+
+    const dark =
+        document.getElementById(
+            "darkModeButton"
+        );
+
+
+    if(!light||!dark)return;
+
+
+    light.classList.toggle(
+        "active",
+        currentTheme==="light"
+    );
+
+
+    dark.classList.toggle(
+        "active",
+        currentTheme==="dark"
+    );
+
+}
+
+
+function toggleDoNotDisturb(){
+
+    doNotDisturb=!doNotDisturb;
+
+
+    const button =
+        document.getElementById(
+            "dndButton"
+        );
+
+
+    const text =
+        document.getElementById(
+            "dndText"
+        );
+
+
+    text.textContent =
+        doNotDisturb
+        ?"Do Not Disturb: ON"
+        :"Do Not Disturb";
+
+
+    button.classList.toggle(
+        "active",
+        doNotDisturb
+    );
+
+}
+
+
+function showNotification(
+    title,
+    message
+){
+
+    if(doNotDisturb)return;
+
+
+    alert(
+        "🔔 "+title+
+        "\n\n"+
+        message
+    );
+
+}
+
+
+/* =========================
+   REAL BATTERY
+========================= */
+
+let samOSBattery=null;
+
+
+async function updateBattery(){
+
+    const status =
+        document.getElementById(
+            "batteryStatus"
+        );
+
+
+    const icon =
+        document.getElementById(
+            "batteryIcon"
+        );
+
+
+    if(!status||!icon)return;
+
+
+    if(
+        !("getBattery" in navigator)
+    ){
+
+        status.textContent =
+            "Battery unavailable";
+
+        icon.textContent="🔋";
+
+        return;
+
+    }
+
+
+    try{
+
+        samOSBattery =
+            await navigator.getBattery();
+
+
+        updateBatteryDisplay();
+
+
+        samOSBattery.addEventListener(
+            "levelchange",
+            updateBatteryDisplay
+        );
+
+
+        samOSBattery.addEventListener(
+            "chargingchange",
+            updateBatteryDisplay
+        );
+
+
+    }catch(error){
+
+        status.textContent =
+            "Battery unavailable";
+
+        icon.textContent="🔋";
+
+    }
+
+}
+
+
+function updateBatteryDisplay(){
+
+    if(!samOSBattery)return;
+
+
+    const percentage =
+        Math.round(
+            samOSBattery.level*100
+        );
+
+
+    const charging =
+        samOSBattery.charging;
+
+
+    const status =
+        document.getElementById(
+            "batteryStatus"
+        );
+
+
+    const icon =
+        document.getElementById(
+            "batteryIcon"
+        );
+
+
+    status.textContent =
+        percentage+
+        "%"+
+        (
+            charging
+            ?" • Charging ⚡"
+            :""
+        );
+
+
+    if(percentage<=15)
+        icon.textContent="🪫";
+    else
+        icon.textContent="🔋";
+
+}
+
+
+/* =========================
+   NOTEPAD
+========================= */
+
+let notes=[
+
+    {
+        name:"Note 1",
+        text:""
+    }
+
+];
+
+
+let currentNoteIndex=0;
+
+
+function openNotepad(){
+
+    document.getElementById(
+        "notepad"
+    ).style.display="block";
+
+
+    closeStart();
+
+    renderTabs();
+
+    loadCurrentNote();
+
+    updateTaskIndicators();
+
+}
+
+
+function renderTabs(){
+
+    const tabs =
+        document.getElementById(
+            "noteTabs"
+        );
+
+
+    tabs.innerHTML="";
+
+
+    const plus =
+        document.createElement(
+            "button"
+        );
+
+
+    plus.className =
+        "new-note-button";
+
+
+    plus.textContent="+";
+
+
+    plus.onclick=()=>{
+
+        saveCurrentNote();
+
+
+        notes.push({
+
+            name:
+                "Note "+
+                (notes.length+1),
+
+            text:""
+
+        });
+
+
+        currentNoteIndex =
+            notes.length-1;
+
+
+        renderTabs();
+
+        loadCurrentNote();
+
+    };
+
+
+    tabs.appendChild(plus);
+
+
+    notes.forEach(
+        (note,index)=>{
+
+            const tab =
+                document.createElement(
+                    "button"
+                );
+
+
+            tab.className =
+                "note-tab"+
+                (
+                    index===currentNoteIndex
+                    ?" active"
+                    :""
+                );
+
+
+            tab.textContent =
+                note.name;
+
+
+            tab.onclick=()=>{
+
+                saveCurrentNote();
+
+
+                currentNoteIndex=index;
+
+
+                renderTabs();
+
+                loadCurrentNote();
+
+            };
+
+
+            tabs.appendChild(tab);
+
+        }
+    );
+
+}
+
+
+function saveCurrentNote(){
+
+    if(
+        notes[currentNoteIndex]
+    ){
+
+        notes[currentNoteIndex].text =
+            document.getElementById(
+                "noteEditor"
+            ).value;
+
+    }
+
+}
+
+
+function updateCurrentNote(){
+
+    saveCurrentNote();
+
+}
+
+
+function loadCurrentNote(){
+
+    document.getElementById(
+        "noteEditor"
+    ).value =
+        notes[currentNoteIndex]?.text
+        ||"";
+
+}
+
+
+function renameCurrentNote(){
+
+    document.getElementById(
+        "renameInput"
+    ).value =
+        notes[currentNoteIndex].name;
+
+
+    document.getElementById(
+        "renameOverlay"
+    ).style.display="flex";
+
+
+    closeAction="note";
+
+}
+
+
+function finishRename(){
+
+    const name =
+        document.getElementById(
+            "renameInput"
+        ).value.trim();
+
+
+    if(!name)return;
+
+
+    if(
+        closeAction==="file" &&
+        selectedItem
+    ){
+
+        selectedItem.name=name;
+
+        saveFileSystem();
+
+        renderExplorer();
+
+        selectedItem=null;
+
+    }else{
+
+        notes[currentNoteIndex].name =
+            name;
+
+        renderTabs();
+
+    }
+
+
+    cancelRename();
+
+}
+
+
+function cancelRename(){
+
+    document.getElementById(
+        "renameOverlay"
+    ).style.display="none";
+
+}
+
+
+function requestCloseNotepad(){
+
+    document.getElementById(
+        "notepad"
+    ).style.display="none";
+
+
+    updateTaskIndicators();
+
+}
+
+
+function requestCloseCurrentNote(){
+
+    requestCloseNotepad();
+
+}
+
+
+function saveCurrentNoteToSamOS(){
+
+    saveCurrentNote();
+
+    alert(
+        "💾 Note saved!"
+    );
+
+}
+
+
+/* =========================
+   CALCULATOR
+========================= */
+
+let calculatorExpression="";
+
+
+function openCalculator(){
+
+    document.getElementById(
+        "calculator"
+    ).style.display="block";
+
+
+    closeStart();
+
+    updateTaskIndicators();
+
+}
+
+
+function closeCalculator(){
+
+    document.getElementById(
+        "calculator"
+    ).style.display="none";
+
+
+    updateTaskIndicators();
+
+}
+
+
+function addToCalculator(value){
+
+    calculatorExpression+=value;
+
+
+    document.getElementById(
+        "display"
+    ).textContent =
+        calculatorExpression;
+
+}
+
+
+function clearCalculator(){
+
+    calculatorExpression="";
+
+
+    document.getElementById(
+        "display"
+    ).textContent="0";
+
+}
+
+
+function calculate(){
+
+    try{
+
+        calculatorExpression =
+            String(
+                Function(
+                    "return "+
+                    calculatorExpression
+                )()
+            );
+
+
+        document.getElementById(
+            "display"
+        ).textContent =
+            calculatorExpression;
+
+
+    }catch{
+
+        calculatorExpression="";
+
+
+        document.getElementById(
+            "display"
+        ).textContent="Error";
+
+    }
+
+}
+
+
+/* =========================
+   TERMINAL
+========================= */
+
+function openTerminal(){
+
+    document.getElementById(
+        "terminal"
+    ).style.display="block";
+
+
+    closeStart();
+
+
+    document.getElementById(
+        "terminalInput"
+    ).focus();
+
+
+    updateTaskIndicators();
+
+}
+
+
+function closeTerminal(){
+
+    document.getElementById(
+        "terminal"
+    ).style.display="none";
+
+
+    updateTaskIndicators();
+
+}
+
+
+function terminalKey(event){
+
+    if(event.key!=="Enter")return;
+
+
+    const input =
+        document.getElementById(
+            "terminalInput"
+        );
+
+
+    const command =
+        input.value.trim();
+
+
+    input.value="";
+
+
+    if(!command)return;
+
+
+    terminalPrint(
+        "SamOS> "+command
+    );
+
+
+    if(command==="help"){
+
+        terminalPrint(
+`Available commands:
+
+help
+about
+ver
+time
+date
+clear
+echo`
+        );
+
+
+    }else if(command==="about"){
+
+        terminalPrint(
+            "SamOS v2.3 — Made by Samim"
+        );
+
+
+    }else if(command==="ver"){
+
+        terminalPrint(
+            "SamOS Version 2.3"
+        );
+
+
+    }else if(command==="time"){
+
+        terminalPrint(
+            new Date().toLocaleTimeString()
+        );
+
+
+    }else if(command==="date"){
+
+        terminalPrint(
+            new Date().toLocaleDateString()
+        );
+
+
+    }else if(command==="clear"){
+
+        document.getElementById(
+            "terminalOutput"
+        ).textContent="";
+
+
+    }else if(
+        command.startsWith("echo ")
+    ){
+
+        terminalPrint(
+            command.substring(5)
+        );
+
+
+    }else{
+
+        terminalPrint(
+            "Unknown command. Type help."
+        );
+
+    }
+
+}
+
+
+function terminalPrint(text){
+
+    document.getElementById(
+        "terminalOutput"
+    ).textContent +=
+        "\n"+text;
+
+}
+
+
+/* =========================
+   FILE EXPLORER
+========================= */
+
+let fileSystem =
+JSON.parse(
+    localStorage.getItem(
+        "SamOS_FileSystem"
+    ) || "null"
+);
+
+
+if(!fileSystem){
+
+    fileSystem={
+
+        "This PC":{
+            type:"folder",
+
+            items:[
+
+                {
+                    name:"Documents",
+                    type:"folder"
+                },
+
+                {
+                    name:"Pictures",
+                    type:"folder"
+                },
+
+                {
+                    name:"Downloads",
+                    type:"folder"
+                },
+
+                {
+                    name:"Games",
+                    type:"folder"
+                }
+
+            ]
+
+        },
+
+
+        Documents:{
+            type:"folder",
+            items:[]
+        },
+
+
+        Pictures:{
+            type:"folder",
+            items:[]
+        },
+
+
+        Downloads:{
+            type:"folder",
+            items:[]
+        },
+
+
+        Games:{
+            type:"folder",
+            items:[]
+        }
+
+    };
+
+}
+
+
+let currentFolder="This PC";
+
+let folderHistory=[];
+
+let selectedItem=null;
+
+
+function saveFileSystem(){
+
+    localStorage.setItem(
+        "SamOS_FileSystem",
+        JSON.stringify(fileSystem)
+    );
+
+}
+
+
+function openFileExplorer(){
+
+    document.getElementById(
+        "fileExplorer"
+    ).style.display="block";
+
+
+    closeStart();
+
+    renderExplorer();
+
+    updateTaskIndicators();
+
+}
+
+
+function closeFileExplorer(){
+
+    document.getElementById(
+        "fileExplorer"
+    ).style.display="none";
+
+
+    updateTaskIndicators();
+
+}
+
+
+function renderExplorer(){
+
+    const content =
+        document.getElementById(
+            "explorerContent"
+        );
+
+
+    content.innerHTML="";
+
+
+    document.getElementById(
+        "explorerPath"
+    ).textContent =
+        currentFolder;
+
+
+    fileSystem[currentFolder]
+    .items
+    .forEach(
+        item=>{
+
+            const element =
+                document.createElement(
+                    "div"
+                );
+
+
+            element.className =
+                "explorer-item";
+
+
+            element.innerHTML =
+            `
+            <div class="explorer-icon">
+            ${item.type==="folder"?"📁":"📄"}
+            </div>
+
+            <div class="explorer-name">
+            ${item.name}
+            </div>
+            `;
+
+
+            element.onclick=()=>{
+
+                selectedItem=item;
+
+            };
+
+
+            element.ondblclick=()=>{
+
+                if(
+                    item.type==="folder"
+                )
+                    openFolder(
+                        item.name
+                    );
+                else
+                    alert(
+                        "📄 "+item.name
+                    );
+
+            };
+
+
+            content.appendChild(
+                element
+            );
+
+        }
+    );
+
+}
+
+
+function openFolder(name){
+
+    folderHistory.push(
+        currentFolder
+    );
+
+
+    currentFolder=name;
+
+    selectedItem=null;
+
+    renderExplorer();
+
+}
+
+
+function explorerBack(){
+
+    if(folderHistory.length)
+
+        currentFolder =
+            folderHistory.pop();
+
+    else
+
+        currentFolder =
+            "This PC";
+
+
+    renderExplorer();
+
+}
+
+
+function explorerHome(){
+
+    currentFolder="This PC";
+
+    folderHistory=[];
+
+    renderExplorer();
+
+}
+
+
+let newItemType=null;
+
+
+function createFolder(){
+
+    newItemType="folder";
+
+
+    document.getElementById(
+        "newItemTitle"
+    ).textContent =
+        "📁 New Folder";
+
+
+    document.getElementById(
+        "newItemInput"
+    ).value="";
+
+
+    document.getElementById(
+        "newItemOverlay"
+    ).style.display="flex";
+
+}
+
+
+function createTextFile(){
+
+    newItemType="file";
+
+
+    document.getElementById(
+        "newItemTitle"
+    ).textContent =
+        "📄 New Text File";
+
+
+    document.getElementById(
+        "newItemInput"
+    ).value="";
+
+
+    document.getElementById(
+        "newItemOverlay"
+    ).style.display="flex";
+
+}
+
+
+function finishNewItem(){
+
+    let name =
+        document.getElementById(
+            "newItemInput"
+        ).value.trim();
+
+
+    if(!name)return;
+
+
+    if(
+        newItemType==="file" &&
+        !name.endsWith(".txt")
+    ){
+
+        name+=".txt";
+
+    }
+
+
+    fileSystem[currentFolder]
+    .items
+    .push({
+
+        name:name,
+
+        type:newItemType
+
+    });
+
+
+    if(
+        newItemType==="folder"
+    ){
+
+        fileSystem[name]={
+
+            type:"folder",
+
+            items:[]
+
+        };
+
+    }
+
+
+    saveFileSystem();
+
+    cancelNewItem();
+
+    renderExplorer();
+
+}
+
+
+function cancelNewItem(){
+
+    document.getElementById(
+        "newItemOverlay"
+    ).style.display="none";
+
+}
+
+
+function renameSelected(){
+
+    if(!selectedItem){
+
+        alert(
+            "Select something first!"
+        );
+
+        return;
+
+    }
+
+
+    document.getElementById(
+        "renameInput"
+    ).value =
+        selectedItem.name;
+
+
+    document.getElementById(
+        "renameOverlay"
+    ).style.display="flex";
+
+
+    closeAction="file";
+
+}
+
+
+function deleteSelected(){
+
+    if(!selectedItem){
+
+        alert(
+            "Select something first!"
+        );
+
+        return;
+
+    }
+
+
+    if(
+        !confirm(
+            'Delete "'+
+            selectedItem.name+
+            '"?'
+        )
+    )return;
+
+
+    const items =
+        fileSystem[currentFolder]
+        .items;
+
+
+    const index =
+        items.indexOf(
+            selectedItem
+        );
+
+
+    if(index>=0)
+        items.splice(index,1);
+
+
+    if(
+        selectedItem.type==="folder"
+    )
+
+        delete fileSystem[
+            selectedItem.name
+        ];
+
+
+    selectedItem=null;
+
+
+    saveFileSystem();
+
+    renderExplorer();
+
+}
+
+
+/* =========================
+   SETTINGS
+========================= */
+
+function openSettings(){
+
+    document.getElementById(
+        "settings"
+    ).style.display="block";
+
+
+    closeStart();
+
+    closeControlCentre();
+
+    showSettingsPage(
+        "taskbar"
+    );
+
+
+    updateTaskIndicators();
+
+}
+
+
+function closeSettings(){
+
+    document.getElementById(
+        "settings"
+    ).style.display="none";
+
+
+    updateTaskIndicators();
+
+}
+
+
+function openTaskbarSettings(){
+
+    openSettings();
+
+    showSettingsPage(
+        "taskbar"
+    );
+
+}
+
+
+function showSettingsPage(page){
+
+    document.querySelectorAll(
+        ".settings-nav"
+    ).forEach(
+        x=>
+            x.classList.remove(
+                "active"
+            )
+    );
+
+
+    const navs =
+        document.querySelectorAll(
+            ".settings-nav"
+        );
+
+
+    const indexes={
+
+        taskbar:0,
+
+        appearance:1,
+
+        accounts:2,
+
+        about:3
+
+    };
+
+
+    navs[indexes[page]]
+    .classList.add("active");
+
+
+    const main =
+        document.getElementById(
+            "settingsMain"
+        );
+
+
+    if(page==="taskbar"){
+
+        main.innerHTML=`
+
+        <h1>📌 Taskbar</h1>
+
+        <div class="setting-card">
+
+        <h3>Taskbar layout</h3>
+
+        <p>
+        SamOS uses a centered taskbar layout.
+        </p>
+
+        <button class="theme-button active">
+        Centered ✓
+        </button>
+
+        </div>
+
+        <div class="setting-card">
+
+        <h3>App search</h3>
+
+        <p>
+        Search for SamOS apps directly from the taskbar.
+        </p>
+
+        <button class="theme-button active">
+        Enabled ✓
+        </button>
+
+        </div>
+        `;
+
+
+    }else if(page==="appearance"){
+
+        main.innerHTML=`
+
+        <h1>🎨 Appearance</h1>
+
+        <div class="setting-card">
+
+        <h3>Theme</h3>
+
+        <p>
+        Choose how SamOS looks.
+        </p>
+
+        <div class="theme-buttons">
+
+        <button
+        class="theme-button ${
+            currentTheme==="dark"
+            ?"active"
+            :""
+        }"
+        onclick="setTheme('dark')">
+
+        🌙 Dark Mode
+
+        </button>
+
+        <button
+        class="theme-button ${
+            currentTheme==="light"
+            ?"active"
+            :""
+        }"
+        onclick="setTheme('light')">
+
+        ☀️ Light Mode
+
+        </button>
+
+        </div>
+
+        </div>
+
+
+        <div class="setting-card">
+
+        <h3>
+        🖼️ Desktop Wallpaper
+        </h3>
+
+        <p>
+        Choose your SamOS desktop wallpaper.
+        </p>
+
+        <div class="wallpaper-preview"></div>
+
+        <div class="theme-buttons">
+
+        <button
+        class="wallpaper-button active"
+        onclick="setWallpaper('nebula')">
+
+        🌌 Deep Space Nebula
+
+        </button>
+
+        </div>
+
+        </div>
+        `;
+
+
+    }else if(page==="accounts"){
+
+        main.innerHTML=`
+
+        <h1>👤 Accounts</h1>
+
+        <div class="setting-card">
+
+        <h3>Current account</h3>
+
+        <p>
+        Signed in as
+        <b>
+        ${selectedAccount||"Guest"}
+        </b>.
+        </p>
+
+        <h3>
+        Accounts on this SamOS
+        </h3>
+
+        <p>
+        ${Object.keys(accounts).join(", ")}
+        </p>
+
+        </div>
+        `;
+
+
+    }else{
+
+        main.innerHTML=`
+
+        <h1>ℹ️ About SamOS</h1>
+
+        <div class="setting-card">
+
+        <h3>
+        SamOS v2.3
+        </h3>
+
+        <p>
+        Your computer. Your rules.
+        </p>
+
+        <p>
+        Made by Samim 😎
+        </p>
+
+        </div>
+        `;
+
+    }
+
+}
+
+
+/* =========================
+   ABOUT
+========================= */
+
+function openAbout(){
+
+    document.getElementById(
+        "about"
+    ).style.display="block";
+
+
+    closeStart();
+
+}
+
+
+function closeAbout(){
+
+    document.getElementById(
+        "about"
+    ).style.display="none";
+
+}
+
+
+/* =========================
+   WINDOW DRAGGING
+========================= */
+
+let draggedWindow=null;
+
+let offsetX=0;
+
+let offsetY=0;
+
+let highestZ=100;
+
+let closeAction="";
+
+
+function bringToFront(win){
+
+    highestZ++;
+
+    win.style.zIndex=
+        highestZ;
+
+}
+
+
+function startDrag(event,id){
+
+    if(
+        event.target.closest(
+            ".window-button"
+        )
+    )return;
+
+
+    const win =
+        document.getElementById(id);
+
+
+    if(
+        win.classList.contains(
+            "maximized"
+        )
+    )
+        return;
+
+
+    bringToFront(win);
+
+
+    const rect =
+        win.getBoundingClientRect();
+
+
+    offsetX =
+        event.clientX-
+        rect.left;
+
+
+    offsetY =
+        event.clientY-
+        rect.top;
+
+
+    draggedWindow=win;
+
+
+    document.addEventListener(
+        "mousemove",
+        dragWindow
+    );
+
+
+    document.addEventListener(
+        "mouseup",
+        stopDrag
+    );
+
+}
+
+
+function dragWindow(event){
+
+    if(!draggedWindow)return;
+
+
+    draggedWindow.style.left =
+        event.clientX-
+        offsetX+
+        "px";
+
+
+    draggedWindow.style.top =
+        event.clientY-
+        offsetY+
+        "px";
+
+
+    draggedWindow.style.transform =
+        "none";
+
+}
+
+
+function stopDrag(){
+
+    draggedWindow=null;
+
+
+    document.removeEventListener(
+        "mousemove",
+        dragWindow
+    );
+
+
+    document.removeEventListener(
+        "mouseup",
+        stopDrag
+    );
+
+}
+
+
+function maximizeWindow(id){
+
+    const win =
+        document.getElementById(id);
+
+
+    win.classList.toggle(
+        "maximized"
+    );
+
+
+    if(
+        !win.classList.contains(
+            "maximized"
+        )
+    ){
+
+        win.style.left="50%";
+
+        win.style.top="50%";
+
+        win.style.transform =
+            "translate(-50%,-50%)";
+
+    }
+
+}
+
+
+/* =========================
+   CLOCK
+========================= */
+
+function updateClock(){
+
+    const now=new Date();
+
+
+    document.getElementById(
+        "clock"
+    ).textContent =
+        now.toLocaleTimeString(
+            [],
+            {
+                hour:"2-digit",
+                minute:"2-digit"
+            }
+        );
+
+
+    document.getElementById(
+        "date"
+    ).textContent =
+        now.toLocaleDateString();
+
+}
+
+
+updateClock();
+
+
+setInterval(
+    updateClock,
+    1000
+);
+
+
+/* =========================
+   CLOSE MENUS
+========================= */
+
+document.addEventListener(
+    "click",
+    event=>{
+
+        const menu =
+            document.getElementById(
+                "startMenu"
+            );
+
+
+        const diamond =
+            document.querySelector(
+                ".diamond-button"
+            );
+
+
+        const control =
+            document.getElementById(
+                "controlCentre"
+            );
+
+
+        const controlButton =
+            document.querySelector(
+                ".control-centre-button"
+            );
+
+
+        if(
+            menu.style.display==="block" &&
+            !menu.contains(event.target) &&
+            event.target!==diamond
+        ){
+
+            closeStart();
+
+        }
+
+
+        if(
+            control &&
+            control.classList.contains(
+                "show"
+            ) &&
+            !control.contains(
+                event.target
+            ) &&
+            event.target!==controlButton
+        ){
+
+            closeControlCentre();
+
+        }
+
+    }
+);
+
+
+/* =========================
+   STARTUP
+========================= */
+
+applyAppearance();
+
+renderAccounts();
+
+renderTabs();
+
+updateTaskIndicators();
+
+updateBattery();
+
+
+/*
+   Start at 100% SamOS brightness.
+*/
+
+document.documentElement.style.setProperty(
+    "--samos-brightness",
+    "1"
+);
+
+</script>
+
+</body>
+</html>
